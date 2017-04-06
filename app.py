@@ -2,13 +2,15 @@ input_data = []
 other_players_cards = []
 full_deck = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9,
              10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-acceptable_inputs = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A", "t", "j", "q", "k", "a"}
+lo_count = [2, 3, 4, 5, 6]
+high_count = [1, 10]
+acceptable_inputs = {"2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A", "t", "j", "q", "k", "a"}
 set_of_ten_value_cards = {"T", "J", "Q", "K"}
 global number_of_possible_cards_you_could_draw_if_ace_is_eleven
 global number_of_possible_cards_you_could_draw
 global number_of_aces
 global sum_of_input_data
-
+global hi_lo_count
 
 # This is mostly here for the future when I make this much more usable
 def reset_deck():
@@ -17,9 +19,10 @@ def reset_deck():
 
 
 # This method allows you to input the cards in your hand, returning the total value of your hand and the number of aces
-# in it, updating the full_deck list with this info
+# in it, updating the full_deck list with this info. It also resets the hi_lo_count.
 def create_new_hand():
     number_of_aces = 0
+    hi_lo_count = 0
     while True:
         card_input = input("Please input your next card, input 0 if you have nothing else to input:\n")
         if card_input != "0":
@@ -41,8 +44,13 @@ def create_new_hand():
             input_data[x] = int(input_data[x])
             full_deck.remove(input_data[x])
 
+    for x in range(len(input_data)):
+        if input_data[x] in lo_count:
+            hi_lo_count += 1
+        elif input_data[x] in high_count:
+            hi_lo_count -= 1
     sum_of_input_data = sum(input_data)
-    return sum_of_input_data, number_of_aces
+    return sum_of_input_data, number_of_aces, hi_lo_count
 
 
 # Simply prints out value of your hand, pretty useless, to be honest, but here for posterity
@@ -85,7 +93,7 @@ def calculate_probabilities(sum_of_input_data, number_of_aces):
                 round(probability_of_going_over_21_if_ace_is_eleven, 2)) + "%")
 
 
-def remove_other_players_cards_from_deck():
+def remove_other_players_cards_from_deck(hi_lo_count):
     while True:
         other_players_card_input = input("Please input the cards you know other players hold:\n")
         if other_players_card_input != "0":
@@ -106,16 +114,21 @@ def remove_other_players_cards_from_deck():
         else:
             other_players_cards[x] = int(other_players_cards[x])
             full_deck.remove(other_players_cards[x])
-
+    for x in range(len(other_players_cards)):
+        if other_players_cards[x] in lo_count:
+            hi_lo_count += 1
+        elif other_players_cards[x] in high_count:
+            hi_lo_count -= 1
+    return hi_lo_count
 
 # The main method, calls upon the methods above. Do I need to explain that?
 def main():
-    value_of_hand, no_aces_in_hand = create_new_hand()
+    value_of_hand, no_aces_in_hand, high_low_card_count = create_new_hand()
     current_value_of_hand(value_of_hand)
     while True:
         other_cards_availableyn = input("Do you have any cards from your opponents' hands to put in? Y/N\n")
         if other_cards_availableyn == "Y" or other_cards_availableyn == "y":
-            remove_other_players_cards_from_deck()
+            high_low_card_count = remove_other_players_cards_from_deck(high_low_card_count)
             break
         elif other_cards_availableyn == "N" or other_cards_availableyn == "n":
             break
@@ -123,6 +136,7 @@ def main():
             print("Uh. Sorry, we didn't recognise what you just said. Try again?")
             continue
     calculate_probabilities(value_of_hand, no_aces_in_hand)
+    print("The current high/low card count is " + str(high_low_card_count))
 
 
 main()
