@@ -12,8 +12,9 @@ account the number of cards left in the deck, their values, and whether you're
 holding an ace or not. After that, you can also put in the cards you know other
 players hold. Then, it will give an updated statistical likelihood.
 
-If you're reading this now, I've uploaded this the morning after, and it's very
-basic, probably not PEP 8 compliant, and so on. I'm about to work on this 
-further, make it clearer to use, and so on. I also don't know the mathematics of
-actual card counting, so once the current version is complete, I'll be checking
-out quite how that works.
+There have been a number of changes since I wrote the Codebar version, but the 
+key thing to note is:
+
+# Don't actually use this to count cards. It's just a challenge for myself.
+
+# Did I really need to tell you that?
