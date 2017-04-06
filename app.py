@@ -11,6 +11,8 @@ set_of_ten_value_cards = {"T", "J", "Q", "K"}
 number_of_aces = 0
 number_of_possible_cards_you_could_draw = 0
 number_of_possible_cards_you_could_draw_counting_other_players_cards = 0
+probability_of_going_over_21_if_ace_is_eleven_counting_other_players_cards = 0
+number_of_possible_cards_you_could_draw_if_ace_is_eleven_counting_other_players_cards = 0
 
 while inputting_data:
     card_input = input("Please input your next card, input 0 if you have nothing else to input:\n")
@@ -91,6 +93,17 @@ for x in range(len(full_deck)):
         break
 
 probability_of_going_over_21_counting_other_players_cards = (number_of_possible_cards_you_could_draw_counting_other_players_cards / len(full_deck)) * 100
-print("The probability of going over 21 when including other players cards is: " + str(probability_of_going_over_21_counting_other_players_cards) + "%")
+print("The probability of not going over 21 when including other players' cards is: " + str(probability_of_going_over_21_counting_other_players_cards) + "%")
 
+if 1 in input_data:
+    if sum_of_input_data + 10 < 22:
+        sum_if_making_ace_eleven = sum_of_input_data + 10
+        distance_to_being_bust_if_ace_is_eleven = 22 - sum_if_making_ace_eleven
+        for x in range(len(full_deck)):
+            if full_deck[x] < distance_to_being_bust_if_ace_is_eleven:
+                number_of_possible_cards_you_could_draw_if_ace_is_eleven_counting_other_players_cards += 1
+            else:
+                break
+        probability_of_going_over_21_if_ace_is_eleven_counting_other_players_cards = (number_of_possible_cards_you_could_draw_if_ace_is_eleven_counting_other_players_cards / len(full_deck)) * 100
+        print("The probability of not going over 21 when including other players' cards and taking an ace in your hand to mean 11 is: " + str(probability_of_going_over_21_if_ace_is_eleven_counting_other_players_cards) + "%")
 
